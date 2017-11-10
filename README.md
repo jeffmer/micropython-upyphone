@@ -44,7 +44,7 @@ Phone book entries are currently declared statically in *phoneui.py*. A calling 
 
 ### Settings Screen
 ![settings](images/settings.jpg)  
-Adjust screen brigtness and speaker volume. The number at the bottom is pyboard free heap space which is periodically updated (with the current state of code the maximum free heap is around 50K). **CR** requests teh user's current free credit for pay as you go simcards - when received, this is displayed in the label above the free heap space.
+Adjust screen brightness and speaker volume. The number at the bottom is pyboard free heap space which is periodically updated (with the current state of code, the maximum free heap is around 50K). **CR** requests the user's current free credit for pay as you go simcards - when received, this is displayed in the label above the free heap space.
 
 ## Sleep Mode
 If the screen is not touched for 30 seonds then the phone goes into sleep mode. In sleep mode, the pyboard is put into the "sleeping" state, the display is turned off and the sim800l module is put into   "slow clock" mode. Power consumption drops from around 80ma to less than 5ma. The phone is woken up by an incoming call, sms or by pressing the wake up button.
