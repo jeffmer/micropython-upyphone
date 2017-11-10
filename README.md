@@ -20,7 +20,7 @@ In addition, the button switch on the SIM800L skin is connect to ground and to p
 
 ## User Interface
 
-The following describes the User interface and functionality of **uPyPhone**.
+The following describes the User interface and functionality of **UPyPhone**.
 
 ### Home Screen
 ![homescreen](images/homescreen.jpg)   
@@ -30,7 +30,7 @@ The following describes the User interface and functionality of **uPyPhone**.
 ![dialscreen](images/dialscreen.jpg).........![callingscreen](images/callingscreen.jpg)  
 After a number is input using the numeric buttons, **CAL** starts the call, changing screens to the calling screen as pictured. The **CANCEL** button hangsup the call and reverts to the home screen. The **CNL** button on the dial screen also reverts to the home screen without making the call. The **DEL** button deletes the last dialled digit.
 
-### Read Message Screen
+### Read Message Screeno
 ![incomingsms](images/incomingsms.jpg).........![readmessage](images/readmessage.jpg)  
 An incoming SMS is indicated by colouring the **MSG** button green  on the  home screen as well as displaying the location that the message is stored in the sim800l module. The message is read by pressing the **MSG** button which retrieves the message and displays it as shown above. **+** and **-** step through the messages. **D** deletes the currently displayed message and **Bk** reverts to the home screen. 
 
