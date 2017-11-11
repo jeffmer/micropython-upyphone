@@ -30,11 +30,11 @@ The following describes the User interface and functionality of **UPyPhone**.
 ![dialscreen](images/dialscreen.jpg).........![callingscreen](images/callingscreen.jpg)  
 After a number is input using the numeric buttons, **CAL** starts the call, changing screens to the calling screen as pictured. The **CANCEL** button hangsup the call and reverts to the home screen. The **CNL** button on the dial screen also reverts to the home screen without making the call. The **DEL** button deletes the last dialled digit.
 
-### Read Message Screeno
+### Read Message Screen
 ![incomingsms](images/incomingsms.jpg).........![readmessage](images/readmessage.jpg)  
 An incoming SMS is indicated by colouring the **MSG** button green  on the  home screen as well as displaying the location that the message is stored in the sim800l module. The message is read by pressing the **MSG** button which retrieves the message and displays it as shown above. **+** and **-** step through the messages. **D** deletes the currently displayed message and **Bk** reverts to the home screen. 
 
-### Write message screen
+### Write Message SCreen
 ![writemessage](images/writemessage.jpg).........![writemessage1](images/writemessage1.jpg)  
 Once a destination has been specified either by the Phone Book or by the dial screen, this screen is used to compose messages. **ABC** moves to capitals and **123** to numbers and symbols as shown. 
 
