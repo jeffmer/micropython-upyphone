@@ -24,11 +24,11 @@ The following describes the User interface and functionality of **UPyPhone**.
 
 ### Home Screen
 ![homescreen](images/homescreen.jpg)   
- The home screen displays the current signal strength, current network that the phone is registered on and the battery charge level together with time amd date (set automatically from the network). The **CALL** button starts a call by moving to the dial screen to enter the number. The **SMS** button also first changes the screen to dial and then to the write message screen once the destination number has been entered. **PB** changes the screen to the PhoneBook screen, **Msg** to the read message screen and **Set** to the Settings Screen.
+ The home screen displays the current signal strength, current network that the phone is registered on and the battery charge level together with time and date (set automatically from the network). The **CALL** button starts a call by moving to the dial screen to enter the number. The **SMS** button also first changes the screen to dial and then to the write message screen once the destination number has been entered. **PB** changes the screen to the PhoneBook screen, **Msg** to the read message screen and **Set** to the Settings Screen.
  
 ### Dial Screen
 ![dialscreen](images/dialscreen.jpg).........![callingscreen](images/callingscreen.jpg)  
-After a number is input using the numeric buttons, **CAL** starts the call, changing screens to the calling screen as pictured. The **CANCEL** button hangsup the call and reverts to the home screen. The **CNL** button on the dial screen also reverts to the home screen without making the call. The **DEL** button deletes the last dialled digit.
+After a number is input using the numeric buttons, **CAL** starts the call, changing screens to the calling screen as pictured. The **CANCEL** button hangups the call and reverts to the home screen. The **CNL** button on the dial screen also reverts to the home screen without making the call. The **DEL** button deletes the last dialled digit.
 
 ### Read Message Screen
 ![incomingsms](images/incomingsms.jpg).........![readmessage](images/readmessage.jpg)  
@@ -47,4 +47,4 @@ Phone book entries are currently declared statically in *phoneui.py*. A calling 
 Adjust screen brightness and speaker volume. The number at the bottom is pyboard free heap space which is periodically updated (with the current state of code, the maximum free heap is around 50K). **CR** requests the user's current free credit for pay as you go simcards - when received, this is displayed in the label above the free heap space.
 
 ## Sleep Mode
-If the screen is not touched for 30 seonds then the phone goes into sleep mode. In sleep mode, the pyboard is put into the "sleeping" state, the display is turned off and the sim800l module is put into   "slow clock" mode. Power consumption drops from around 80ma to less than 5ma. The phone is woken up by an incoming call, sms or by pressing the wake up button.
+If the screen is not touched for 30 seconds then the phone goes into sleep mode. In sleep mode, the pyboard is put into the "sleeping" state, the display is turned off and the sim800l module is put into   "slow clock" mode. Power consumption drops from around 80ma to less than 5ma. The phone is woken up by an incoming call, sms or by pressing the wake up button.
