@@ -188,11 +188,7 @@ class SIM800L:
             if result[0:5] == "+CCLK":
                 return result.split('"')[1]
         return ''
-
-    def has_input():
-        return not self._uart.any() == 0   
-    
-             
+                 
     def check_incoming(self): 
         if self._uart.any():
             buf=self._uart.readline()
