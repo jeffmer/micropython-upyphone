@@ -1,4 +1,5 @@
-# class Button - for LCD160CR
+# User interface classes for LCD160CR
+# MIT License; Copyright (c) 2017 Jeffrey N. Magee
 
 
 import pyb

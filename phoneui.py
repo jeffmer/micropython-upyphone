@@ -1,3 +1,5 @@
+# MIT License; Copyright (c) 2017 Jeffrey N. Magee
+
 """
 Combines User Interface with SIM800L module. 
 """
@@ -276,7 +278,6 @@ while True:
             if count<=0 and not current == incoming and not current == call: 
                 #sleep
                 lcd.set_power(0)
-                polling = False
                 phone.sleep(2)
                 if not usb.isconnected():
                     pyb.stop()     # wait for button or incoming call    

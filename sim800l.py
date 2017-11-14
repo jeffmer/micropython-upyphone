@@ -1,4 +1,6 @@
-# class keys maps action callbacks to touch key presses
+
+# Driver for SIM800L module (using AT commands)
+# MIT License; Copyright (c) 2017 Jeffrey N. Magee
 
 
 import pyb
