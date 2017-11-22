@@ -7,14 +7,15 @@ Combines User Interface with SIM800L module.
 import pyb
 import lcd160cr
 import sim800l
+import upyapps
 import gc
 
-phonebook = {"Jeff"  :"+xxxxxxxxxxxx",
-             "Home"  :"+xxxxxxxxxxxx",
-             "John"  :"+xxxxxxxxxxxx",
-             "Judith":"+xxxxxxxxxxxx",
-             "Lottie":"+xxxxxxxxxxxx",
-             "Cleder":"+xxxxxxxxxxxx"}
+phonebook = {"xxxxxxx":"+xxxxxxxxxxxx",
+             "xxxxxxx":"+xxxxxxxx xxx",
+             "xxxxxxx":"+xxxxxxxxxxxx",
+             "xxxxxxx":"+xxxxxxxxxxxx",
+             "xxxxxxx":"+xxxxxxxxxxxx",
+             "xxxxxxx":"+xxxxxxxxxxxx"}
 
 inverted_pb = dict((v,k) for k,v in phonebook.items())
 national_pb = dict((v.replace('+44','0'),k) for k,v in phonebook.items())
@@ -22,7 +23,7 @@ national_pb = dict((v.replace('+44','0'),k) for k,v in phonebook.items())
 from  ui import DialScreen, CallScreen, HomeScreen, PhoneBookScreen, SettingsScreen, MessageScreen, SendsmsScreen
 
 lcd = lcd160cr.LCD160CR('Y')
-lcd.set_orient(lcd160cr.PORTRAIT_UPSIDEDOWN)
+lcd.set_orient(lcd160cr.PORTRAIT)
 dial = DialScreen(lcd, 'Dial')
 call = CallScreen(lcd, 'Calling')
 incoming = CallScreen(lcd, 'Incoming',True)
@@ -31,7 +32,12 @@ book = PhoneBookScreen(lcd, 'Phone Book', phonebook)
 messages = MessageScreen(lcd,'Messages')
 sendsms = SendsmsScreen(lcd,'')
 settings = SettingsScreen(lcd, 'Settings')
+applications = upyapps.ManageAppScreen(lcd,lambda x=home: switch_to(x))
 phone = sim800l.SIM800L(4)
+app = upyapps.CurrencyApp(lcd,phone,lambda x=applications: switch_to(x))
+applications.install(app,lambda x=app: switch_to(x))
+app = upyapps.WeatherApp(lcd,phone,lambda x=applications: switch_to(x))
+applications.install(app,lambda x=app: switch_to(x))
 
 current = home
 count = 300
@@ -230,6 +236,7 @@ dial.callback_cancel(docancel)
 call.callback_cancel(cancelcall)
 home.callback_call(set_call)
 home.callback_sms (set_sms)
+home.callback_app(lambda x=applications: switch_to(x))
 home.callback_book(lambda x=book: switch_to(x))
 home.callback_message(do_messages)
 home.callback_settings(dosettings)
@@ -289,7 +296,7 @@ while True:
                 count = 300
                 period = 145         
                 lcd.set_power(1)
-                lcd.set_orient(lcd160cr.PORTRAIT_UPSIDEDOWN)
+                lcd.set_orient(lcd160cr.PORTRAIT)
                 lcd.set_brightness(bright_level)
                 if wokenby ==1:
                     phone.wakechars()

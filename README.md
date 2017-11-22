@@ -1,3 +1,5 @@
+***Updated 22-11-17*** to include Internet access.  Now implements http and https GET requests via GPRS using the SIM800L HTTP AT interface - see below in section on UpyPhone Apps for example applications.
+
 # UpyPhone
 Micropython code to implement a GSM mobile phone. The functionality includes voice and SMS. The hardware consists of a pyboard, an LCD160CR colour touch screen and a SIM800L module as pictured below. It is mounted on a homebrew matrix board skin which plugs into a pyboard. Below the SIM800L is a lipo charger - see below.
 
@@ -23,12 +25,12 @@ In addition, the button switch on the SIM800L skin is connect to ground and to p
 The following describes the User interface and functionality of **UPyPhone**.
 
 ### Home Screen
-![homescreen](images/homescreen.jpg)   
- The home screen displays the current signal strength, current network that the phone is registered on and the battery charge level together with time and date (set automatically from the network). The **CALL** button starts a call by moving to the dial screen to enter the number. The **SMS** button also first changes the screen to dial and then to the write message screen once the destination number has been entered. **PB** changes the screen to the PhoneBook screen, **Msg** to the read message screen and **Set** to the Settings Screen.
+![homescreen](images/newhomescreen.jpg)   
+ The home screen displays the current signal strength, current network that the phone is registered on and the battery charge level together with time and date (set automatically from the network). The **CALL** button starts a call by moving to the dial screen to enter the number. The **SMS** button also first changes the screen to dial and then to the write message screen once the destination number has been entered. **PB** changes the screen to the PhoneBook screen, **Msg** to the read message screen and **Set** to the Settings Screen. **APP** changes to the App screen to choose an App to execute. 
  
 ### Dial Screen
 ![dialscreen](images/dialscreen.jpg).........![callingscreen](images/callingscreen.jpg)  
-After a number is input using the numeric buttons, **CAL** starts the call, changing screens to the calling screen as pictured. The **CANCEL** button hangups the call and reverts to the home screen. The **CNL** button on the dial screen also reverts to the home screen without making the call. The **DEL** button deletes the last dialled digit.
+After a number is input using the numeric buttons, **CAL** starts the call, changing screens to the calling screen as pictured. The **CANCEL** button hangs up the call and reverts to the home screen. The **CNL** button on the dial screen also reverts to the home screen without making the call. The **DEL** button deletes the last dialled digit.
 
 ### Read Message Screen
 ![incomingsms](images/incomingsms.jpg).........![readmessage](images/readmessage.jpg)  
@@ -45,6 +47,13 @@ Phone book entries are currently declared statically in *phoneui.py*. A calling 
 ### Settings Screen
 ![settings](images/settings.jpg)  
 Adjust screen brightness and speaker volume. The number at the bottom is pyboard free heap space which is periodically updated (with the current state of code, the maximum free heap is around 50K). **CR** requests the user's current free credit for pay as you go simcards - when received, this is displayed in the label above the free heap space.
+
+### Apps Screen
+![settings](images/appscreen.jpg)  
+Choose UpyPhone app to execute. There are currently two examples as shown below. The Currency app fetches exchange rates from <http://exchangerate-api.com>. The Weather app fetches current weather conditions from <https://www.wunderground.com>. In both cases, a user specific KEY is required to access the API. See *upyapps.py*.
+
+![currency](images/currency.jpg).........![weather](images/weather.jpg)  
+
 
 ## Sleep Mode
 If the screen is not touched for 30 seconds then the phone goes into sleep mode. In sleep mode, the pyboard is put into the "sleeping" state, the display is turned off and the sim800l module is put into   "slow clock" mode. Power consumption drops from around 80ma to less than 5ma. The phone is woken up by an incoming call, sms or by pressing the wake up button.

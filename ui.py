@@ -14,6 +14,10 @@ RED   = LCD160CR.rgb(255,0,0)
 FG = WHITE
 BG = BLACK
 
+FONTHEIGHT = [5, 8, 8, 14]
+FONTWIDTH  = [4, 6, 6, 9]
+
+
 
 class Button:
 
@@ -37,12 +41,8 @@ class Button:
 
     def draw(self, pressed=False):
         self.lcd.set_font(self.font,0,self.bold,0)
-        if self.font == 3:
-            self.lcd.set_pos(self.x+ self.w//2 - (len(self.label)*9)//2,                     
-                             self.y + self.h//2 -6)
-        else:
-            self.lcd.set_pos(self.x+ self.w//2 - (len(self.label)*6)//2,                     
-                             self.y + self.h//2 -4)
+        self.lcd.set_pos(self.x+ self.w//2 - (len(self.label)*FONTWIDTH[self.font])//2,                     
+                         self.y + self.h//2 -FONTHEIGHT[self.font]//2)
         if not pressed:
             self.lcd.set_pen(self.bg, self.bg)
             self.lcd.set_text_color(self.fg, self.bg)
@@ -72,7 +72,7 @@ class Button:
 
 class Label:
 
-    def __init__(self, screen, x, y, w, h, fg, bg, label, font = 3, bold = 1):
+    def __init__(self, screen, x, y, w, h, fg, bg, label, font = 3, bold = 1, centred = True):
          self.lcd = screen.lcd
          screen.drawable(self)
          self.x = x 
@@ -86,13 +86,15 @@ class Label:
          self.label = label[:self.width]
          self.font = font
          self.bold = bold
+         self.centred = centred
 
     def draw(self):
         self.lcd.set_font(self.font,0,self.bold,0)
-        if self.font == 3:
-            self.lcd.set_pos(self.x+ self.w//2 - (len(self.label)*self.font*3)//2, self.y + self.h//2 -6)
+        if self.centred:
+            xpos = self.x+ self.w//2 - (len(self.label)*FONTWIDTH[self.font])//2
         else:
-            self.lcd.set_pos(self.x+ self.w//2 - (len(self.label)*6)//2, self.y + self.h//2 -4)
+            xpos = self.x
+        self.lcd.set_pos(xpos, self.y + self.h//2 -FONTHEIGHT[self.font]//2)
         self.lcd.set_pen(self.fg, self.bg)
         self.lcd.set_text_color(self.fg, self.bg)
         self.lcd.rect_interior(self.x, self.y, self.w, self.h)
@@ -137,7 +139,31 @@ class Label:
         self.width = w
         self.lines = h
 
+class Image:
 
+    def __init__(self, screen, x, y, w, h, jpegimage):
+         self.lcd = screen.lcd
+         self.bg = screen.bg
+         screen.drawable(self)
+         self.x = x 
+         self.y = y
+         self.w = w
+         self.h = h
+         self.jpegimage = jpegimage
+         
+    def draw(self):
+        self.lcd.set_pos(self.x, self.y)
+        if self.jpegimage:
+            self.lcd.jpeg(self.jpegimage)
+        else:
+            self.lcd.set_pen(self.bg, self.bg)
+            self.lcd.rect(self.x, self.y, self.w, self.h)
+            
+    def set_image(self,im):
+        self.jpegimage = im
+        self.draw()
+        
+         
 class SignalLevel:
 
     def __init__(self, screen,level = 0):
@@ -183,7 +209,7 @@ class BatteryLevel:
         self.lcd.set_pen(WHITE, BLACK)
         self.lcd.rect(100,0,22,9)       
         if self.level>=5:
-            if self.level>20:
+            if self.level>40:
                 self.lcd.set_pen(GREEN, GREEN)
             else:
                 self.lcd.set_pen(RED, RED)
@@ -281,13 +307,15 @@ class SetLevel():
 
 class Screen():
 
-    def __init__(self,lcd):
+    def __init__(self,lcd,fg=WHITE, bg=BLACK):
         self.lcd = lcd
         self.drawlist = []
         self.checklist = []
+        self.fg = fg
+        self.bg = bg
         
     def draw(self):
-        self.lcd.set_pen(WHITE, BLACK)
+        self.lcd.set_pen(self.fg, self.bg)
         self.lcd.erase()
         for d in self.drawlist:
             d.draw()
@@ -307,7 +335,6 @@ class Screen():
 class DialScreen(Screen):
      
     def __init__(self, lcd, label = ''):
-        self.lcd = lcd
         super().__init__(lcd)
         self.win = Label(self,0,3,128,20,FG,BG,label)
         keypad = [
@@ -359,7 +386,6 @@ class DialScreen(Screen):
 class CallScreen(Screen):
      
     def __init__(self, lcd, label = '', ans=False):
-        self.lcd = lcd
         super().__init__(lcd)
         self.status = Label(self,0,10,128,20,FG,BG,label)
         self.number = Label(self,0,50,128,20,FG,BG,'')
@@ -385,7 +411,6 @@ class CallScreen(Screen):
 class HomeScreen(Screen):
      
     def __init__(self, lcd, label = ''):
-        self.lcd = lcd
         super().__init__(lcd)
         self.signal = SignalLevel(self,0)
         self.battery= BatteryLevel(self,0)
@@ -395,8 +420,9 @@ class HomeScreen(Screen):
         self.time = Label(self,0,40,128,10,FG,BG,'')
         self.date = Label(self,40,55,50,10,FG,BG,'',1)
         self.smsid  = Label(self,40,70,50,10,FG,BG,'',1)
-        self.call = Button(self,0,85,50,30,FG,BLUE,'CALL')
-        self.sms = Button(self,78,85,50,30,FG,BLUE,'SMS')
+        self.call = Button(self,0,85,30,30,FG,BLUE,'CAL')
+        self.sms = Button(self,48,85,30,30,FG,BLUE,'SMS')
+        self.app = Button(self,95,85,30,30,FG,BLUE,'APP')
         self.book  = Button(self,0,125,30,30,FG,BLUE,'PB')
         self.message = Button(self,48,125,30,30,FG,BLUE,'Msg')
         self.settings  = Button(self,95,125,30,30,FG,BLUE,'Set')
@@ -406,6 +432,9 @@ class HomeScreen(Screen):
     
     def callback_sms(self,fn):
         self.sms.callback(fn)
+        
+    def callback_app(self,fn):
+        self.app.callback(fn)
 
     def callback_book(self,fn):
         self.book.callback(fn)
@@ -452,7 +481,6 @@ class HomeScreen(Screen):
 class PhoneBookScreen(Screen):
 
     def __init__(self, lcd, label, phonebook):
-        self.lcd = lcd
         super().__init__(lcd)
         self.name =  Label(self,0,0,128,20,FG,BG,label)
         self.cal  =  Button(self,8,125,30,30,FG,GREY,'C')
@@ -493,7 +521,6 @@ class PhoneBookScreen(Screen):
 class SettingsScreen(Screen):
 
     def __init__(self, lcd, label):
-        self.lcd = lcd
         super().__init__(lcd)
         self.name = Label(self,0,0,128,20,FG,BG,label)
         self.back  = Button(self,98,125,30,30,FG,BLUE,'Bk')
@@ -524,7 +551,6 @@ class SettingsScreen(Screen):
 class MessageScreen(Screen):
 
     def __init__(self, lcd, label):
-        self.lcd = lcd
         super().__init__(lcd)
         self.name = Label(self,0,0,128,16,FG,BG,label,3,0)
         self.source = Label(self,10,20,100,8,FG,GREY,'',1,0)
@@ -579,7 +605,6 @@ class MessageScreen(Screen):
 class SendsmsScreen(Screen):
     
     def __init__(self, lcd, label):
-        self.lcd = lcd
         self.msgtext =''
         super().__init__(lcd)
         self.send  = Button(self,0,0,30,16,FG,BLUE,'Send',1,0)
