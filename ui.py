@@ -81,8 +81,7 @@ class Label:
          self.h = h
          self.fg =fg
          self.bg =bg
-         self.width = 32
-         self.lines = 1
+         self.width = w // FONTWIDTH[font]
          self.label = label[:self.width]
          self.font = font
          self.bold = bold
@@ -98,46 +97,64 @@ class Label:
         self.lcd.set_pen(self.fg, self.bg)
         self.lcd.set_text_color(self.fg, self.bg)
         self.lcd.rect_interior(self.x, self.y, self.w, self.h)
-        if self.lines == 1:
-            self.lcd.write(self.label)
-        else:
-            curline = 0; pos = 0
-            wlines = self.label.split('\n')
-            for ln in range(len(wlines)):
-                words = wlines[ln].split(' ')
-                for wn in range(len(words)):
-                    if pos + len(words[wn]) > self.width:                
-                        pos = 0; curline = curline +1
-                        if curline >= self.lines:
-                            return
-                        while len(words[wn]) > self.width:
-                            self.lcd.set_pos(self.x, self.y+curline*8)
-                            self.lcd.write(words[wn][:self.width])
-                            words[wn] = words[wn][self.width:]
-                            curline = curline +1
-                            if curline >= self.lines:
-                                return
-                    self.lcd.set_pos(self.x + pos*6, self.y+curline*8)
-                    self.lcd.write(words[wn]+' ')
-                    pos = pos + len(words[wn])+1
-                pos = 0; curline = curline +1
-                if curline >= self.lines:
-                    return
-
+        self.lcd.write(self.label)
 
     def set_background(self,color):
         self.bg = color
 
     def set_text(self,txt):
-        if self.lines == 1:
-            self.label = txt[:self.width]
-        else:
-            self.label = txt
-        self.draw() 
+        self.label = txt[:self.width]
+        self.draw()
 
-    def set_txtbox(self,w,h):
-        self.width = w
-        self.lines = h
+
+class Textbox:
+    
+    def __init__(self, screen, x, y, w, h, fg, bg, label, font = 3, bold = 1):
+        self.lcd = screen.lcd
+        screen.drawable(self)
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.fg =fg
+        self.bg =bg
+        self.font = font
+        self.width = w // FONTWIDTH[font]
+        self.lines = h // FONTHEIGHT[font]
+        self.label = label[:self.width]
+        self.bold = bold
+
+    def draw(self):
+        self.lcd.set_font(self.font,0,self.bold,0)
+        self.lcd.set_pen(self.fg, self.bg)
+        self.lcd.set_text_color(self.fg, self.bg)
+        self.lcd.rect_interior(self.x, self.y, self.w, self.h)
+        curline = 0; pos = 0
+        wlines = self.label.split('\n')
+        for ln in range(len(wlines)):
+            words = wlines[ln].split(' ')
+            for wn in range(len(words)):
+                if pos + len(words[wn]) > self.width:
+                    pos = 0; curline = curline +1
+                    if curline >= self.lines:
+                        return
+                    while len(words[wn]) > self.width:
+                        self.lcd.set_pos(self.x, self.y+curline*8)
+                        self.lcd.write(words[wn][:self.width])
+                        words[wn] = words[wn][self.width:]
+                        curline = curline +1
+                        if curline >= self.lines:
+                            return
+                self.lcd.set_pos(self.x + pos*FONTWIDTH[self.font], self.y+curline*FONTHEIGHT[self.font])
+                self.lcd.write(words[wn]+' ')
+                pos = pos + len(words[wn])+1
+            pos = 0; curline = curline +1
+            if curline >= self.lines:
+                return
+
+    def set_text(self,txt):
+        self.label = txt
+        self.draw() 
 
 class Image:
 
@@ -414,8 +431,7 @@ class HomeScreen(Screen):
         super().__init__(lcd)
         self.signal = SignalLevel(self,0)
         self.battery= BatteryLevel(self,0)
-        self.network = Label(self,40,0,55,10,FG,BG,'',1)
-        self.network.set_txtbox(8,1)
+        self.network = Label(self,40,0,50,10,FG,BG,'',1)
         self.name = Label(self,0,20,128,16,FG,BG,label)
         self.time = Label(self,0,40,128,10,FG,BG,'')
         self.date = Label(self,40,55,50,10,FG,BG,'',1)
@@ -556,8 +572,7 @@ class MessageScreen(Screen):
         self.source = Label(self,10,20,100,8,FG,GREY,'',1,0)
         self.time = Label(self,0,30,60,8,FG,GREY,'',1,0)
         self.date = Label(self,64,30,60,8,FG,GREY,'',1,0)
-        self.text = Label(self,0,40,128,80,FG,BG,'',1,0)
-        self.text.set_txtbox(21,10)
+        self.text = Textbox(self,0,40,128,80,FG,BG,'',1,0)
         self.delete = Button(self,0,125,20,30,FG,RED,'D')
         self.plus  = Button(self,26,125,20,30,FG,BLUE,'+')
         self.minus = Button(self,52,125,20,30,FG,BLUE,'-')
@@ -611,8 +626,7 @@ class SendsmsScreen(Screen):
         self.clear = Button(self,60,0,30,16,FG,BLUE,'Clr',1,0)
         self.cancel  = Button(self,94,0,30,16,FG,BLUE,'Home',1,0)
         self.destination = Label(self,24,20,80,8,FG,GREY,label,1,0)
-        self.text = Label(self,0,32,128,56,FG,BG,'',1,0)
-        self.text.set_txtbox(21,7)
+        self.text = Textbox(self,0,32,128,56,FG,BG,'',1,0)
         self.keys = Keys(self,88)
         self.abc  = Button(self,0,140,20,16,FG,GREY,'ABC',1,0)
         self.numbers = Button(self,22,140,20,16,FG,GREY,'123',1,0)
